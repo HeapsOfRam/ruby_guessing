@@ -4,8 +4,7 @@ def play_round(guesses)
 	num = Random.new.rand($low..$high)
 
 	for guess_step in 1..guesses
-		puts "Enter a guess: "
-		user_guess = gets.to_i
+		user_guess = ensure_user_guess_in_bounds
 
 		if user_guess == num
 			return true
@@ -17,6 +16,15 @@ def play_round(guesses)
 	end
 
 	return false
+end
+
+def ensure_user_guess_in_bounds
+	begin
+		puts "Please enter a guess between #{$low} and #{$high}"
+		user_guess = gets.to_i
+	end until user_guess < $high && user_guess > $low
+
+	return user_guess
 end
 
 def determine_if_player_will_continue
