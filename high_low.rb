@@ -1,10 +1,8 @@
-$high, $low = 0, 0
-
-def play_round(guesses)
-	num = Random.new.rand($low..$high)
+def play_round(guesses, low, high)
+	num = Random.new.rand(low..high)
 
 	for guess_step in 1..guesses
-		user_guess = ensure_user_guess_in_bounds
+		user_guess = ensure_user_guess_in_bounds(low, high)
 
 		if user_guess == num
 			return true
@@ -18,11 +16,11 @@ def play_round(guesses)
 	return false
 end
 
-def ensure_user_guess_in_bounds
+def ensure_user_guess_in_bounds(low, high)
 	begin
-		puts "Please enter a guess between #{$low} and #{$high}"
+		puts "Please enter a guess between #{low} and #{high}"
 		user_guess = gets.to_i
-	end until user_guess < $high && user_guess > $low
+	end until user_guess < high && user_guess > low
 
 	return user_guess
 end
@@ -34,8 +32,8 @@ def determine_if_player_will_continue
 	return user_choice == 'y' || user_choice == 'yes' || user_choice == '1'
 end
 
-def valid_high_low
-	return $high > $low && $high - $low >= 9
+def valid_high_low(low, high)
+	return high > low && high - low >= 9
 end
 
 def ensure_valid_number_of_guesses
@@ -57,19 +55,19 @@ puts "You will be told whether your guess is too high or too low"
 continue_playing = true
 
 while continue_playing
-	while not valid_high_low
+	begin
 		puts ""
 		puts "Please enter lower bound and then upper bound"
 		puts "Also, please make sure the bounds are at least 9 apart"
 		puts "Please enter a lower bound: "
-		$low = gets.to_i
+		low = gets.to_i
 		puts "Please enter an upper bound: "
-		$high = gets.to_i
-	end
+		high = gets.to_i
+	end while not valid_high_low(low, high)
 
 	guesses = ensure_valid_number_of_guesses()
 
-	if play_round(guesses)
+	if play_round(guesses, low, high)
 		puts "You got the number"
 	else
 		puts "Better luck next time"
@@ -77,7 +75,7 @@ while continue_playing
 
 	continue_playing = determine_if_player_will_continue()
 
-	$high, $low = 0, 0
+	high, low = 0, 0
 end
 
 puts "Thanks for playing!"
